@@ -1,4 +1,7 @@
 import sqlite3
+from consultas import ConsultarReservaApp
+from registroReservas import reservar_aula
+import tkinter as tk
 
 conn = sqlite3.connect("reservas.db")
 cursor = conn.cursor()
@@ -17,10 +20,7 @@ cursor.execute("""
 
 conn.commit()
 conn.close()
-from consultas import ConsultarReservaApp
-from registroReservas import reservar_aula
-import tkinter as tk
-from tkinter import font
+
 
 def menu():
     root = tk.Tk()
@@ -122,5 +122,3 @@ def salir(root):
 
 
 menu()
-
-
