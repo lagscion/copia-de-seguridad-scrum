@@ -48,15 +48,39 @@ class EliminarReservaApp:
         reserva_id = self.entry_id.get()
         
         if not reserva_id.isdigit():
-            messagebox.showwarning("Atención", "Por favor, ingrese un ID numérico válido.")
+            messagebox.showwarning("Atención", "Por favor, ingrese un ID numérico válido.", parent=self.root)
             return
 
-        # Confirmación antes de proceder
-        confirmar = messagebox.askyesno("Confirmar", f"¿Estás seguro de eliminar la reserva {reserva_id}?\nEsta acción no se puede deshacer.")
-        
-        if confirmar:
-            self.ejecutar_sql(reserva_id)
+        try:
+            # 1. Buscar la información antes de preguntar 
+            conn = sqlite3.connect('reservas.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT aula, fecha, hora_inicio FROM reservas WHERE id = ?", (reserva_id,))
+            reserva = cursor.fetchone()
+            conn.close()
 
+            if reserva:
+                # 2. Construir el mensaje con los detalles de la reserva 
+                aula, fecha, hora = reserva
+                mensaje = (
+                    f"¿Estás seguro de eliminar la siguiente reserva?\n\n"
+                    f"ID: {reserva_id}\n"
+                    f"AULA: {aula}\n"
+                    f"FECHA: {fecha}\n"
+                    f"HORA: {hora}\n\n"
+                    "Esta acción no se puede deshacer."
+                )
+                
+                # 3. Pedir confirmación final
+                confirmar = messagebox.askyesno("Confirmar Eliminación", mensaje, parent=self.root)
+                
+                if confirmar:
+                    self.ejecutar_sql(reserva_id)
+            else:
+                messagebox.showinfo("Búsqueda", f"No se encontró ninguna reserva con el ID: {reserva_id}",parent=self.root)
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al consultar la base de datos: {e}",parent=self.root)
     def ejecutar_sql(self, reserva_id):
         try:
             # Conexión a la base de datos reservas.db 
@@ -68,11 +92,11 @@ class EliminarReservaApp:
             
             if cursor.rowcount > 0:
                 conn.commit()
-                messagebox.showinfo("Éxito", f"Reserva con ID {reserva_id} eliminada.")
+                messagebox.showinfo("Éxito", f"Reserva con ID {reserva_id} eliminada.",parent=self.root)
                 self.entry_id.delete(0, tk.END)
             else:
-                messagebox.showinfo("Búsqueda", "No existe ninguna reserva con ese ID.")
+                messagebox.showinfo("Búsqueda", "No existe ninguna reserva con ese ID.",parent=self.root)
             
             conn.close()
         except sqlite3.Error as e:
-            messagebox.showerror("Error", f"Error en la base de datos: {e}")
+            messagebox.showerror("Error", f"Error en la base de datos: {e}",parent=self.root)
