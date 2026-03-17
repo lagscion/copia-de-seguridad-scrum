@@ -1,4 +1,8 @@
 import sqlite3
+from consultas import ConsultarReservaApp
+from registroReservas import reservar_aula
+import tkinter as tk
+from cancelar import EliminarReservaApp
 
 conn = sqlite3.connect("reservas.db")
 cursor = conn.cursor()
@@ -17,10 +21,7 @@ cursor.execute("""
 
 conn.commit()
 conn.close()
-from consultas import ConsultarReservaApp
-from registroReservas import reservar_aula
-import tkinter as tk
-from tkinter import font
+
 
 def menu():
     root = tk.Tk()
@@ -56,7 +57,7 @@ def menu():
         ("1.  Reservar aula",     "#1a7fb5", reservar_aula),
         ("2.  Consultar reserva", "#2196a6", lambda: consultar_reserva(root)),
         ("3.  Modificar reserva", "#2196a6", modificar_reserva),
-        ("4.  Cancelar reserva",  "#e05252", cancelar_reserva),
+        ("4.  Cancelar reserva",  "#e05252", lambda: cancelar_reserva(root)),
         ("5.  Salir",             "#607d8b", lambda: salir(root)),
     ]
 
@@ -113,8 +114,9 @@ def consultar_reserva(ventana_principal):
 def modificar_reserva():
     pass
 
-def cancelar_reserva():
-    pass
+def cancelar_reserva(ventana_principal):
+    """Llama al módulo de eliminación enviándole la ventana raíz."""
+    EliminarReservaApp(ventana_principal)
 
 def salir(root):
     print("SALIENDO...")
@@ -122,5 +124,3 @@ def salir(root):
 
 
 menu()
-
-

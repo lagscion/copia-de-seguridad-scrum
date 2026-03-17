@@ -168,5 +168,3 @@ def reservar_aula():
     btn.bind("<Leave>", lambda e: btn.configure(bg="#1a7fb5"))
 
     ventana.mainloop()
-
-

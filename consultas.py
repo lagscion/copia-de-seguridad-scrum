@@ -87,7 +87,7 @@ class ConsultarReservaApp:
         reserva_id = self.entry_id.get()
         
         if not reserva_id.isdigit():
-            messagebox.showwarning("Atención", "Ingrese un ID válido.")
+            messagebox.showwarning("Atención", "Ingrese un ID válido.",parent=self.root)
             return
 
         try:
@@ -117,12 +117,11 @@ class ConsultarReservaApp:
                     self.detalles[key].config(text=str(value))
             else:
                 self.limpiar_datos()
-                messagebox.showinfo("Búsqueda", f"No se encontró la reserva con ID: {reserva_id}")
+                messagebox.showinfo("Búsqueda", f"No se encontró la reserva con ID: {reserva_id}", parent=self.root)
 
         except sqlite3.Error as e:
-            messagebox.showerror("Error de Sistema", f"Error en la base de datos: {e}")
+            messagebox.showerror("Error de Sistema", f"Error en la base de datos: {e}", parent=self.root)
 
     def limpiar_datos(self):
         for lbl in self.detalles.values():
             lbl.config(text="---")
-
