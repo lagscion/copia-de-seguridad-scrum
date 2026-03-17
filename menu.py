@@ -1,6 +1,4 @@
 import sqlite3
-from registroReservas import reservar_aula
-import tkinter as tk
 
 conn = sqlite3.connect("reservas.db")
 cursor = conn.cursor()
@@ -19,8 +17,10 @@ cursor.execute("""
 
 conn.commit()
 conn.close()
-
-
+from consultas import ConsultarReservaApp
+from registroReservas import reservar_aula
+import tkinter as tk
+from tkinter import font
 
 def menu():
     root = tk.Tk()
@@ -54,7 +54,7 @@ def menu():
     # BOTONES
     opciones = [
         ("1.  Reservar aula",     "#1a7fb5", reservar_aula),
-        ("2.  Consultar reserva", "#2196a6", consultar_reserva),
+        ("2.  Consultar reserva", "#2196a6", lambda: consultar_reserva(root)),
         ("3.  Modificar reserva", "#2196a6", modificar_reserva),
         ("4.  Cancelar reserva",  "#e05252", cancelar_reserva),
         ("5.  Salir",             "#607d8b", lambda: salir(root)),
@@ -106,8 +106,9 @@ def _hover(color):
 
 
 # FUNCIONES
-def consultar_reserva():
-    pass
+def consultar_reserva(ventana_principal):
+    """Llama al módulo de consulta enviándole la ventana raíz."""
+    ConsultarReservaApp(ventana_principal)
 
 def modificar_reserva():
     pass
